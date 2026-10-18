@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>رادمهر — پیش‌نمایش طراحی</title>
+<style>
+  :root{
+    --brand:#4f46e5; --brand-50:#eef2ff; --brand-100:#e0e7ff; --brand-600:#4f46e5; --brand-700:#4338ca;
+    --violet:#7c3aed; --slate:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f7fb;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:#eef0f6; color:var(--slate); line-height:1.9;
+    font-family:"Vazirmatn","IRANSans",Tahoma,"Segoe UI",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:16px}
+  /* ── نوار پیش‌نمایش ── */
+  .previewbar{
+    background:#fff;border:1px solid #e5e9f2;border-radius:18px;padding:12px 14px;box-shadow:0 8px 24px rgba(15,23,42,.06);
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;
+  }
+  .previewbar .title{display:flex;align-items:center;gap:10px;margin-inline-end:auto}
+  .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:grid;place-items:center;font-weight:900;font-size:19px;box-shadow:0 6px 14px rgba(99,102,241,.35)}
+  .tab{
+    border:1px solid var(--line);background:#fff;border-radius:12px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#475569;cursor:pointer;
+    transition:.15s;font-family:inherit
+  }
+  .tab:hover{border-color:#a5b4fc;color:var(--brand-700)}
+  .tab.on{background:var(--brand-600);border-color:var(--brand-600);color:#fff;box-shadow:0 6px 14px rgba(79,70,229,.25)}
+  .hint{font-size:11px;color:var(--muted);background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:8px 12px;margin-bottom:14px}
+  /* ── قاب مرورگر ── */
+  .framebox{background:#fff;border:1px solid #e2e8f0;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(15,23,42,.14)}
+  .chromebar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid #eaeef5}
+  .dot{width:10px;height:10px;border-radius:99px}
+  .url{margin-inline-start:10px;background:#fff;border:1px solid #e5e9f2;border-radius:99px;font-size:10.5px;color:#94a3b8;padding:3px 12px;direction:ltr}
+  .screen{display:none}
+  .screen.on{display:block}
+  /* ── چیدمان اپ ── */
+  .shell{display:flex;min-height:660px;background:var(--bg)}
+  .sidebar{width:224px;flex:0 0 224px;background:#fff;border-inline-start:1px solid #eaecf3;display:flex;flex-direction:column}
+  .brand{padding:14px;border-bottom:1px solid #f1f5f9;display:flex;gap:10px;align-items:center}
+  .brand .logo{width:38px;height:38px;font-size:18px;border-radius:12px}
+  .brand b{font-size:14.5px;display:block}
+  .brand span{font-size:10px;color:var(--muted)}
+  .nav{padding:10px;flex:1}
+  .nav a{
+    display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:11px;font-size:12.5px;font-weight:600;color:#475569;
+    text-decoration:none;margin-bottom:3px
+  }
+  .nav a.act{background:var(--brand-50);color:var(--brand-700)}
+  .nav a i{width:17px;height:17px;display:inline-grid;place-items:center;font-style:normal;opacity:.85}
+  .sidefoot{border-top:1px solid #f1f5f9;padding:10px}
+  .userchip{display:flex;gap:9px;align-items:center;padding:6px 8px;border-radius:12px}
+  .av{width:34px;height:34px;border-radius:99px;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--brand-100);color:var(--brand-700);flex:0 0 auto}
+  .av.v{background:#ede9fe;color:#6d28d9}
+  .av.g{background:#d1fae5;color:#047857}
+  .av.a{background:#fef3c7;color:#b45309}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:rgba(255,255,255,.9);border-bottom:1px solid #eaecf3}
+  .topbar h1{font-size:14px;margin:0;font-weight:800}
+  .content{padding:16px;display:grid;gap:14px;align-content:start}
+  .cols{display:grid;grid-template-columns:2fr 1fr;gap:14px;align-items:start}
+  .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  /* ── کارت‌ها ── */
+  .card{background:#fff;border:1px solid #e6eaf2;border-radius:16px;padding:14px;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+  .card.tight{padding:11px}
+  .card h3{margin:0 0 3px;font-size:13.5px;font-weight:800}
+  .card .sub{font-size:11px;color:var(--muted);margin:0 0 10px}
+  .sechead{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+  .ico{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand-600);font-size:15px}
+  .frac{display:inline-block;font-weight:800;font-size:10px;border:1px solid;border-radius:6px;padding:1px 5px;direction:ltr;margin-top:4px}
+  .frac.g{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+  .frac.a{background:#fffbeb;border-color:#fde68a;color:#92400e}
+  .frac.r{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+  .stg{display:inline-block;font-size:9.5px;border:1px solid #cbd5e1;border-radius:6px;padding:0 4px;color:#475569;background:#fff;margin-top:3px}
+  .lk{display:flex;align-items:center;gap:7px;border:1px solid #e2e8f0;border-radius:13px;padding:7px 9px;font-size:11px;font-weight:700;color:#334155;background:#fff}
+  .lk.on{border-color:#6366f1;background:#eef2ff}
+  .lk .bx{width:18px;height:18px;border-radius:6px;border:1.5px solid #cbd5e1;display:grid;place-items:center;font-size:11px;background:#fff;margin-inline-start:auto}
+  .lk.on .bx{background:#4f46e5;border-color:#4f46e5;color:#fff}
+  .hero{border:0;border-radius:18px;padding:16px;color:#fff;background:linear-gradient(270deg,#4f46e5,#7c3aed)}
+  .hero.green{background:linear-gradient(270deg,#059669,#0d9488)}
+  .hero h2{margin:0;font-size:17px;font-weight:900}
+  .hero p{margin:4px 0 0;font-size:11.5px;opacity:.92}
+  .hero .row{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+  /* ── دکمه و برچسب ── */
+  .btn{border:0;border-radius:11px;padding:8px 13px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer}
+  .btn.primary{background:var(--brand-600);color:#fff}
+  .btn.light{background:#fff;color:#334155;border:1px solid #dbe2ee}
+  .btn.soft{background:var(--brand-50);color:var(--brand-700);border:1px solid var(--brand-100)}
+  .btn.ok{background:#059669;color:#fff}
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 9px;border:1px solid}
+  .b-brand{background:var(--brand-50);border-color:var(--brand-100);color:var(--brand-700)}
+  .b-green{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+  .b-amber{background:#fffbeb;border-color:#fde68a;color:#92400e}
+  .b-rose{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+  .b-violet{background:#f5f3ff;border-color:#ddd6fe;color:#6d28d9}
+  .b-slate{background:#f8fafc;border-color:#e2e8f0;color:#475569}
+  /* ── آمار ── */
+  .stat{border:1px solid #e6eaf2;border-radius:16px;padding:12px}
+  .stat.b{background:linear-gradient(180deg,#eef2ff,#fff)}
+  .stat.g{background:linear-gradient(180deg,#ecfdf5,#fff)}
+  .stat.v{background:linear-gradient(180deg,#f5f3ff,#fff)}
+  .stat.a{background:linear-gradient(180deg,#fffbeb,#fff)}
+  .stat small{font-size:10.5px;color:#64748b;display:block}
+  .stat b{font-size:19px;font-weight:900}
+  .stat span{font-size:10.5px;color:#94a3b8}
+  /* ── هفته ── */
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+  .day{background:#fff;border:1px solid #e6eaf2;border-radius:14px;padding:8px;min-height:190px}
+  .day.today{border-color:#818cf8;box-shadow:0 0 0 3px #e0e7ff}
+  .day h4{margin:0;font-size:11.5px;text-align:center}
+  .day .d{font-size:10px;color:var(--muted);text-align:center;border-bottom:1px solid #f1f5f9;padding-bottom:5px;margin-bottom:6px}
+  .it{border-radius:10px;padding:6px;font-size:10.5px;border:1px solid;margin-bottom:5px;line-height:1.7}
+  .it s{opacity:.7}
+  .it.study{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+  .it.test{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+  .it.review{background:#fffbeb;border-color:#fde68a;color:#92400e}
+  .it.sport{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+  .it.rest{background:#f8fafc;border-color:#e2e8f0;color:#475569}
+  .it .t{opacity:.75;font-size:9.5px;display:block}
+  /* ── نمودار ── */
+  .bars{display:flex;align-items:flex-end;gap:9px;height:140px;padding:6px 4px 0;border-bottom:1px solid var(--line)}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%;position:relative}
+  .bar .col{width:100%;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#6366f1,#c7d2fe)}
+  .bar .pt{width:9px;height:9px;border-radius:99px;background:#10b981;position:absolute}
+  .bar .lbl{font-size:9.5px;color:#94a3b8}
+  .legend{display:flex;gap:14px;justify-content:center;font-size:10px;color:var(--muted);margin-top:6px}
+  .legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-inline-end:4px}
+  .trend{width:100%;height:96px}
+  /* ── پیشرفت و فهرست ── */
+  .prog{height:8px;background:#eef2f7;border-radius:99px;overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--brand);border-radius:99px}
+  .prog.g i{background:#10b981}
+  .rows{display:grid;gap:9px}
+  .row{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid #e6eaf2;border-radius:14px}
+  .row .grow{flex:1;min-width:0}
+  .row b{font-size:12.5px}
+  .row small{font-size:10.5px;color:var(--muted);display:block}
+  .mini{font-size:10px;color:#94a3b8}
+  /* ── فرم و چت ── */
+  .field{margin-bottom:9px}
+  .field label{font-size:11px;color:#475569;display:block;margin-bottom:4px;font-weight:600}
+  .field .in{border:1px solid #dbe2ee;border-radius:12px;background:#fff;padding:9px 11px;font-size:12px;color:#334155}
+  .rate{display:flex;gap:6px;direction:ltr;justify-content:flex-end}
+  .rate b{width:28px;height:28px;border-radius:99px;border:1px solid #cbd5e1;display:grid;place-items:center;font-size:11px;color:#94a3b8;background:#fff}
+  .rate b.on{background:var(--brand-600);border-color:var(--brand-600);color:#fff}
+  .bubbles{display:grid;gap:9px}
+  .bub{display:flex;gap:8px}
+  .bub.me{flex-direction:row-reverse}
+  .bub .txt{background:#f8fafc;border:1px solid #e9edf5;border-radius:14px;padding:8px 11px;font-size:11.5px;max-width:76%}
+  .bub.coach .txt{background:#f5f3ff;border-color:#ddd6fe}
+  /* ── صفحه ورود ── */
+  .login{display:grid;grid-template-columns:1.05fr .95fr;min-height:600px}
+  .login .side{background:linear-gradient(160deg,#4338ca,#6d28d9);color:#fff;padding:34px 30px;display:flex;flex-direction:column;justify-content:space-between}
+  .login .side h2{font-size:23px;line-height:1.7;margin:26px 0 10px;font-weight:900}
+  .login .side p{font-size:12.5px;opacity:.9}
+  .login .side li{font-size:12.5px;margin-bottom:9px;list-style:none;display:flex;gap:8px;align-items:center}
+  .login .side li i{width:19px;height:19px;border-radius:99px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:10px;font-style:normal}
+  .login .form{padding:38px 40px;display:flex;flex-direction:column;justify-content:center}
+  .quick{display:grid;gap:6px;margin-top:10px}
+  .quick button{display:flex;justify-content:space-between;align-items:center;border:1px solid #e6eaf2;background:#fff;border-radius:12px;padding:8px 11px;font-size:11px;font-family:inherit;color:#475569;cursor:pointer}
+  .quick button b{color:#334155}
+  .quick span{color:#94a3b8;direction:ltr;font-size:10.5px}
+  .note{font-size:10.5px;color:#64748b;background:#f8fafc;border:1px solid #e9edf5;border-radius:12px;padding:9px 11px;line-height:1.9}
+  .callout{font-size:11px;border-radius:12px;padding:9px 11px;line-height:1.9}
+  .callout.amber{background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+  .callout.rose{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239}
+  .callout.green{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+  .callout.brand{background:var(--brand-50);border:1px solid var(--brand-100);color:#3730a3}
+  .footer-note{font-size:10.5px;color:#94a3b8;text-align:center;padding:12px}
+  /* ── موبایل ── */
+  @media (max-width:900px){
+    .cols,.login{grid-template-columns:1fr}
+    .grid4,.cols3{grid-template-columns:1fr 1fr}
+    .sidebar{display:none}
+    .week{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="previewbar">
+    <div class="title">
+      <div class="logo">ر</div>
+      <div>
+        <b style="font-size:14.5px">رادمهر</b>
+        <div style="font-size:10.5px;color:#64748b">پیش‌نمایش طراحی — نگاه اول</div>
+      </div>
+    </div>
+    <button class="tab" data-go="login">۱. ورود</button>
+    <button class="tab" data-go="dash">۲. داشبورد مشاور</button>
+    <button class="tab" data-go="file">۳. پرونده دانش‌آموز</button>
+    <button class="tab" data-go="plan">۴. ویرایش‌گر برنامه</button>
+    <button class="tab" data-go="home">۵. خانه دانش‌آموز</button>
+    <button class="tab" data-go="approve">۶. تأیید برنامه</button>
+    <button class="tab" data-go="checkin">۷. چک‌این</button>
+    <button class="tab" data-go="exams">۸. آزمون‌ها</button>
+    <button class="tab" data-go="parent">۹. گزارش والد</button>
+  </div>
+
+  <div class="hint">
+    این فایل <b>فقط پیش‌نمایش ظاهر و ساختار</b> است (استاتیک، بدون ذخیره‌سازی). نسخه‌ی واقعی با همان ظاهر در حالت دمو کار می‌کند و
+    بعد از اتصال Supabase، چندکاربره و آنلاین می‌شود. برای دیدن هر صفحه، دکمه‌های بالا را بزن.
+  </div>
+
+  <div class="framebox">
+    <div class="chromebar">
+      <span class="dot" style="background:#fda4af"></span>
+      <span class="dot" style="background:#fcd34d"></span>
+      <span class="dot" style="background:#86efac"></span>
+      <span class="url" id="urlpill">hamghadam.netlify.app</span>
+    </div>
+
+    <!-- ══════════════ ۱. ورود ══════════════ -->
+    <section class="screen on" id="s-login">
+      <div class="login">
+        <div class="side">
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-weight:900;font-size:19px">ر</div>
+            <div><b>رادمهر</b><div style="font-size:10.5px;opacity:.75">مشاوره‌ی تحصیلی و روان‌شناختی</div></div>
+          </div>
+          <div>
+            <h2>با هم برنامه‌ای متناسب با خودمان می‌نویسیم<br>تا زندگی را بهتر کنیم.</h2>
+            <p>یک فضای مشترک برای مشاهده، ویرایش، تأیید و ثبت بازخورد روی برنامه‌های درسی و تمرین‌های روانی — با پیگیری روزانه و گزارش برای والدین.</p>
+            <ul style="padding:0;margin:18px 0 0">
+              <li><i>✓</i> برنامه‌ی هفتگی و روزانه با تأیید دوطرفه</li>
+              <li><i>✓</i> چک‌این حال، خواب، مطالعه، فضای مجازی، ورزش و تفریح‌های سالم</li>
+              <li><i>✓</i> آزمون‌ها، کارنامه و دفتر اشتباهات</li>
+              <li><i>✓</i> نمای خواندنی والدین و گزارش هفتگی</li>
+            </ul>
+          </div>
+          <p style="font-size:10.5px;opacity:.7;margin:0">فارسی و راست‌به‌چپ · موبایل‌محور · تاریخ شمسی</p>
+        </div>
+        <div class="form">
+          <h2 style="margin:0 0 4px;font-size:19px">ورود به حساب</h2>
+          <p style="font-size:11.5px;color:#64748b;margin:0 0 16px">با شماره موبایل و رمز عبور وارد شوید.</p>
+          <div class="field"><label>شماره موبایل</label><div class="in" dir="ltr" style="text-align:left;color:#94a3b8">0912xxxxxxx</div></div>
+          <div class="field"><label>رمز عبور</label><div class="in" dir="ltr" style="text-align:left;letter-spacing:3px;color:#94a3b8">••••••</div></div>
+          <button class="btn primary" style="width:100%;padding:11px">ورود</button>
+          <p style="font-size:11px;color:#64748b;text-align:center;margin:10px 0 0">حساب ندارید؟ <b style="color:var(--brand-700)">ثبت‌نام کنید</b></p>
+          <div class="card tight" style="margin-top:16px;background:#f8fafc">
+            <b style="font-size:11.5px">ورود سریع با حساب‌های نمونه (حالت دمو)</b>
+            <div class="quick">
+              <button><b>سمیرا رضایی — مشاور</b><span>09120000000 / 123456</span></button>
+              <button><b>علی محمدی — دانش‌آموز</b><span>09121111111 / 123456</span></button>
+              <button><b>زهرا محمدی — والد</b><span>09123333333 / 123456</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ قالب مشترک اپ (سایدبار + هدر) ══════════════ -->
+    <section class="screen" id="s-dash"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav">
+        <a class="act" href="#"><i>🏠</i> داشبورد</a><a href="#"><i>👥</i> دانش‌آموزان</a><a href="#"><i>📘</i> برنامه‌ها</a>
+        <a href="#"><i>🗓</i> جلسات</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>🎟</i> دعوت‌ها</a>
+      </nav>
+      <div class="sidefoot"><div class="userchip"><span class="av v">سر</span><div><b style="font-size:12px">سمیرا رضایی</b><div class="mini">مشاور</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>داشبورد مشاور</h1><span style="margin-inline-start:auto" class="badge b-green">متصل به Supabase</span></div>
+      <div class="content">
+        <div class="card hero">
+          <p style="margin:0">شنبه، ۲ آبان ۱۴۰۵</p>
+          <h2 style="margin-top:6px">سلام سمیرا رضایی 👋</h2>
+          <p>۱ جلسه امروز داری. ۲ برنامه منتظر تأیید دانش‌آموز است.</p>
+        </div>
+        <div class="card" style="border-style:dashed">
+          <div class="sechead"><span class="ico">🔔</span><div><h3>یادآورهای امروز</h3><p class="sub" style="margin:0">بدون پیامک — وقتی اپ را باز می‌کنی این‌ها را می‌بینی</p></div><span class="badge b-slate" style="margin-inline-start:auto">۴ مورد</span></div>
+          <div class="cols3">
+            <div class="callout amber"><b>سینا احمدی: ۵ روز بدون چک‌این</b><br>پیگیری کوتاه بهتر از یادآوری سخت‌گیرانه جواب می‌دهد.</div>
+            <div class="callout rose"><b>حال علی ۲ روز پایین ثبت شده</b><br>پیشنهاد: سبک‌کردن بار یک روز + تمرین آرام‌سازی.</div>
+            <div class="callout brand"><b>جلسه‌ی نگار فرداست</b><br>انتخاب رشته و تعیین هدف — ساعت ۱۶:۰۰</div>
+          </div>
+        </div>
+        <div class="grid4">
+          <div class="stat v"><small>میانگین آخرین آزمون</small><b>۵۷٪</b><span>آزمون آزمایشی شماره ۴</span></div>
+          <div class="stat b"><small>دانش‌آموزان</small><b>۳</b><span>۲ فعال · ۱ تازه‌وارد</span></div>
+          <div class="stat a"><small>برنامه‌های در انتظار تأیید</small><b>۲</b><span>هفته‌ی آینده</span></div>
+          <div class="stat g"><small>جلسات این هفته</small><b>۲</b><span>هر دو آنلاین</span></div>
+        </div>
+        <div class="cols">
+          <div class="card">
+            <div class="sechead"><span class="ico">👥</span><div><h3>وضعیت دانش‌آموزان</h3><p class="sub" style="margin:0">پیشرفت هفته، حال آخرین چک‌این و کارهای باز</p></div></div>
+            <div class="rows">
+              <div class="row"><span class="av">عم</span><div class="grow"><b>علی محمدی</b> <span class="badge b-slate">دوازدهم · تجربی</span><div class="prog g" style="margin-top:6px"><i style="width:72%"></i></div><small>۷ از ۱۱ آیتم · ۷۲٪</small></div><div style="text-align:left"><small class="mini">آخرین چک‌این</small><b style="font-size:11px">۴/۵ — دیروز</b></div><button class="btn soft">پرونده</button></div>
+              <div class="row"><span class="av">نک</span><div class="grow"><b>نگار کاظمی</b> <span class="badge b-slate">یازدهم · ریاضی</span><div class="prog" style="margin-top:6px"><i style="width:44%"></i></div><small>۳ از ۷ آیتم · ۴۴٪</small></div><div style="text-align:left"><small class="mini">آخرین چک‌این</small><b style="font-size:11px">۳/۵ — ۲ روز پیش</b></div><button class="btn soft">پرونده</button></div>
+              <div class="row"><span class="av a">سا</span><div class="grow"><b>سینا احمدی</b> <span class="badge b-slate">دهم · انسانی</span><div class="prog" style="margin-top:6px"><i style="width:18%"></i></div><small>۱ از ۵ آیتم · ۱۸٪</small></div><div style="text-align:left"><small class="mini">آخرین چک‌این</small><b style="font-size:11px">— ثبت نشده</b></div><button class="btn soft">پرونده</button></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sechead"><span class="ico">✨</span><div><h3>پیشنهادهای رادمهر برای تو</h3><p class="sub" style="margin:0">بر اساس داده‌ی همین هفته</p></div></div>
+            <div class="rows">
+              <div class="callout amber">تمرین «دفتر اشتباهات روزانه» برای علی مناسب است: ۳ مورد «بی‌دقتی» حل‌نشده دارد.</div>
+              <div class="callout brand">درصد انجام برنامه‌ی سینا پایین است؛ برنامه‌ی این هفته را سبک‌تر و واقع‌بینانه‌تر بازچین.</div>
+              <div class="callout green">حال و تمرکز علی بهتر شده؛ می‌توانی یک بلوک مطالعه‌ی چالشی اضافه کنی.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۳. پرونده دانش‌آموز ══════════════ -->
+    <section class="screen" id="s-file"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> داشبورد</a><a class="act" href="#"><i>👥</i> دانش‌آموزان</a><a href="#"><i>📘</i> برنامه‌ها</a><a href="#"><i>🗓</i> جلسات</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>🎟</i> دعوت‌ها</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av v">سر</span><div><b style="font-size:12px">سمیرا رضایی</b><div class="mini">مشاور</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>پرونده‌ی دانش‌آموز</h1><span class="badge b-brand" style="margin-inline-start:auto">دوازدهم — علوم تجربی</span></div>
+      <div class="content">
+        <div class="card">
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <span class="av" style="width:56px;height:56px;font-size:19px">عم</span>
+            <div style="flex:1">
+              <b style="font-size:16px">علی محمدی</b>
+              <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
+                <span class="badge b-brand">دوازدهم</span><span class="badge b-violet">علوم تجربی</span><span class="badge b-slate">دبیرستان شهید بهشتی</span>
+              </div>
+            </div>
+            <button class="btn light">ویرایش پروفایل</button>
+            <button class="btn primary">+ برنامه‌ی جدید</button>
+          </div>
+          <div class="grid4" style="margin-top:14px">
+            <div class="stat b"><small>مطالعه‌ی این هفته</small><b>۱۴ <span>ساعت</span></b></div>
+            <div class="stat g"><small>آخرین چک‌این</small><b>۴/۵</b><span>دیروز</span></div>
+            <div class="stat a"><small>تمرین‌های باز</small><b>۲</b></div>
+            <div class="stat v"><small>میانگین آخرین آزمون</small><b>۵۷٪</b><span>آزمون آزمایشی ۴</span></div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
+            <span class="badge b-brand">نمای کلی</span><span class="badge b-slate">برنامه‌ها (۳)</span><span class="badge b-slate">تمرین‌ها (۴)</span>
+            <span class="badge b-slate">چک‌این‌ها (۱۰)</span><span class="badge b-slate">جلسات (۲)</span><span class="badge b-slate">آزمون‌ها (۲)</span><span class="badge b-slate">بازخورد</span>
+          </div>
+        </div>
+
+        <div class="cols">
+          <div class="card">
+            <div class="sechead"><span class="ico">❤️</span><div><h3>روند حال و مطالعه</h3><p class="sub" style="margin:0">۱۴ روز اخیر — ستون‌ها: دقایق مطالعه · نقطه‌ها: حال روزانه</p></div></div>
+            <div class="bars">
+              <div class="bar"><span class="pt" style="bottom:56%;background:#f59e0b"></span><div class="col" style="height:52%"></div><span class="lbl">۱۸۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:70%"></div><span class="lbl">۲۴۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:60%"></div><span class="lbl">۲۱۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:30%;background:#f43f5e"></span><div class="col" style="height:26%"></div><span class="lbl">۹۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:88%"></div><span class="lbl">۳۰۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:84%;background:#10b981"></span><div class="col" style="height:76%"></div><span class="lbl">۲۶۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:56%;background:#f59e0b"></span><div class="col" style="height:44%"></div><span class="lbl">۱۵۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:70%"></div><span class="lbl">۲۴۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:82%"></div><span class="lbl">۲۸۰</span></div>
+              <div class="bar"><span class="pt" style="bottom:84%;background:#10b981"></span><div class="col" style="height:92%"></div><span class="lbl">۳۱۰</span></div>
+            </div>
+            <div class="legend"><span><i style="background:#6366f1"></i>دقایق مطالعه</span><span><i style="background:#10b981;border-radius:99px"></i>حال خوب</span><span><i style="background:#f43f5e;border-radius:99px"></i>حال نامساعد</span></div>
+          </div>
+
+          <div style="display:grid;gap:14px">
+            <div class="card">
+              <div class="sechead"><span class="ico">🧠</span><div><h3>پیشنهاد تمرین بر اساس داده</h3><p class="sub" style="margin:0">با ذکر دلیل، قابل ویرایش</p></div></div>
+              <div class="rows">
+                <div class="row" style="background:#fffbeb;border-color:#fde68a"><div class="grow"><b>دفتر اشتباهات روزانه</b><small>چرا؟ ۳ مورد «بی‌دقتی» حل‌نشده</small></div><button class="btn soft">افزودن</button></div>
+                <div class="row" style="background:#fffbeb;border-color:#fde68a"><div class="grow"><b>مرور فاصله‌دار (۱-۳-۷)</b><small>چرا؟ برای همه مفید است</small></div><button class="btn soft">افزودن</button></div>
+              </div>
+              <button class="btn light" style="width:100%;margin-top:10px">باز کردن بانک تمرین‌ها (۲۷ تمرین)</button>
+            </div>
+            <div class="card">
+              <div class="sechead"><span class="ico">💬</span><div><h3>یادداشت و پیام برای دانش‌آموز</h3></div></div>
+              <div class="bubbles">
+                <div class="bub coach"><span class="av v" style="width:28px;height:28px;font-size:11px">سر</span><div class="txt"><b style="font-size:10.5px">سمیرا رضایی — مشاور</b><br>علی جان، برنامه‌ی هفته‌ی بعد را آماده کردم. اگر جایی فشار زیادی دارد بگو تا سبک‌ترش کنیم.</div></div>
+                <div class="bub me"><span class="av" style="width:28px;height:28px;font-size:11px">عم</span><div class="txt">سلام خانم رضایی. دوشنبه‌ها تا ۶ کلاس دارم، می‌شه ساعت ریاضی رو به ۱۹ منتقل کنیم؟</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۴. ویرایش‌گر برنامه ══════════════ -->
+    <section class="screen" id="s-plan"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> داشبورد</a><a href="#"><i>👥</i> دانش‌آموزان</a><a class="act" href="#"><i>📘</i> برنامه‌ها</a><a href="#"><i>🗓</i> جلسات</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>🎟</i> دعوت‌ها</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av v">سر</span><div><b style="font-size:12px">سمیرا رضایی</b><div class="mini">مشاور</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>ویرایش برنامه</h1><span class="badge b-amber" style="margin-inline-start:auto">در انتظار تأیید دانش‌آموز</span></div>
+      <div class="content">
+        <div class="card">
+          <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+            <div style="flex:1;min-width:220px">
+              <b style="font-size:15px">برنامه‌ی هفته‌ی بعد — تمرکز روی نقاط ضعف</b>
+              <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+                <span class="badge b-amber">در انتظار تأیید دانش‌آموز</span><span class="badge b-slate">دانش‌آموز: قابل ویرایش</span><span class="badge b-slate">قابل مشاهده والدین</span>
+              </div>
+              <p class="sub" style="margin:8px 0 0">برای علی محمدی · ۲ آبان تا ۸ آبان · نسخه ۱</p>
+            </div>
+            <button class="btn light">پرونده دانش‌آموز</button><button class="btn light">مشخصات برنامه</button><button class="btn light">قالب‌ها</button>
+            <button class="btn ok">تأیید نهایی و فعال‌سازی</button>
+          </div>
+          <div class="grid4" style="margin-top:14px">
+            <div class="stat b"><small>آیتم‌های برنامه</small><b>۱۱</b></div>
+            <div class="stat g"><small>انجام‌شده توسط دانش‌آموز</small><b>۷/۱۱</b></div>
+            <div class="stat v"><small>مجموع زمان برنامه</small><b>۱۴ <span>ساعت</span></b></div>
+            <div class="stat a"><small>درصد پیشرفت</small><b>۶۴٪</b></div>
+          </div>
+          <div class="prog g" style="margin-top:10px"><i style="width:64%"></i></div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <button class="btn light">هفته‌ی بعد ›</button>
+            <b style="font-size:12.5px">۲ تا ۸ آبان</b>
+            <button class="btn light">‹ هفته‌ی قبل</button>
+            <div style="margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap">
+              <span class="badge b-brand">این هفته</span><span class="badge b-slate">کل برنامه</span>
+              <button class="btn light">کپی از هفته‌ی قبل</button><button class="btn primary">+ آیتم جدید</button>
+            </div>
+          </div>
+          <div class="week">
+            <div class="day today"><h4>شنبه</h4><div class="d">۲ آبان · ۳ ساعت</div>
+              <div class="it study"><s>زیست — فصل ۵ گوارش</s><span class="t">۱۶:۰۰ · ۹۰′ ✓</span>
+                <div><span class="frac g">۱۹/۲۵</span> <span class="stg">مرحله ۱، ۲، ۳، ۴</span></div></div>
+              <div class="it test"><s>۲۵ تست ریاضی — تابع</s><span class="t">۱۸:۰۰ · ۶۰′ ✓</span>
+                <div><span class="frac g">۲۰/۲۵</span> <span class="stg">مرحله ۴، ۵</span></div></div></div>
+            <div class="day"><h4>یک‌شنبه</h4><div class="d">۳ آبان · ۲ ساعت</div>
+              <div class="it review">شیمی — مرور استوکیومتری<span class="t">۱۶:۳۰ · ۷۵′</span>
+                <div><span class="frac a">۹/۱۵</span> <span class="stg">مرحله ۶</span></div></div>
+              <div class="it study">زبان — ۳۰ لغت + reading<span class="t">۱۹:۰۰ · ۴۵′</span></div></div>
+            <div class="day"><h4>دوشنبه</h4><div class="d">۴ آبان · ۲ ساعت</div>
+              <div class="it study">فیزیک — حرکت‌شناسی<span class="t">۱۵:۳۰ · ۹۰′ · اولویت بالا</span></div>
+              <div class="it sport">ورزش / پیاده‌روی<span class="t">۲۰:۰۰ · ۴۰′</span></div></div>
+            <div class="day"><h4>سه‌شنبه</h4><div class="d">۵ آبان · ۳ ساعت</div>
+              <div class="it test">آزمون آزمایشی — عمومی<span class="t">۱۶:۰۰ · ۱۲۰′</span>
+                <div><span class="frac a">۷۱/۱۰۰</span> <span class="stg">مرحله ۷</span></div></div>
+              <div class="it review">تحلیل آزمون و دفتر اشتباهات<span class="t">۱۸:۳۰ · ۶۰′</span></div></div>
+            <div class="day"><h4>چهارشنبه</h4><div class="d">۶ آبان · ۱.۵ ساعت</div>
+              <div class="it study">زیست — ژنتیک<span class="t">۱۶:۰۰ · ۹۰′</span></div></div>
+            <div class="day"><h4>پنج‌شنبه</h4><div class="d">۷ آبان · ۴۵′</div>
+              <div class="it review">مرور کلی هفته + برنامه‌ریزی<span class="t">۱۰:۰۰ · ۴۵′</span></div></div>
+            <div class="day"><h4>جمعه</h4><div class="d">۸ آبان · ۱ ساعت</div>
+              <div class="it rest">استراحت فعال + مطالعه‌ی آزاد<span class="t">۱۱:۰۰ · ۶۰′</span></div></div>
+          </div>
+          <p class="mini" style="text-align:center;margin:9px 0 0">برای جابه‌جایی: آیتم را روی روز دیگر بکش و رها کن (موبایل: دکمه‌ی ⋮ روی آیتم)</p>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">💬</span><div><h3>بازخورد و توافق روی این برنامه</h3><p class="sub" style="margin:0">دانش‌آموز می‌تواند تأیید کند یا درخواست اصلاح بدهد</p></div></div>
+          <div class="bubbles">
+            <div class="bub coach"><span class="av v" style="width:28px;height:28px;font-size:11px">سر</span><div class="txt"><b style="font-size:10.5px">سمیرا رضایی — مشاور</b><br>برنامه آماده است؛ لطفاً بررسی کن و اگر جایی با کلاس‌ها یا توانت نمی‌خورد بگو تا اصلاح کنم.</div></div>
+            <div class="bub me"><span class="av" style="width:28px;height:28px;font-size:11px">عم</span><div class="txt">سه‌شنبه آزمون دارم، می‌شه تحلیل آزمون رو ببریم چهارشنبه؟</div></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn light">درخواست اصلاح</button><button class="btn primary">ارسال پیام</button></div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۵. خانه دانش‌آموز ══════════════ -->
+    <section class="screen" id="s-home"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a class="act" href="#"><i>🏠</i> خانه</a><a href="#"><i>📘</i> برنامه‌ی من</a><a href="#"><i>📋</i> تمرین‌ها</a><a href="#"><i>❤️</i> چک‌این</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>💬</i> گفت‌وگو</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av">عم</span><div><b style="font-size:12px">علی محمدی</b><div class="mini">دانش‌آموز</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>خانه‌ی من</h1><span class="badge b-brand" style="margin-inline-start:auto">دوازدهم — علوم تجربی</span></div>
+      <div class="content">
+        <div class="card hero">
+          <p style="margin:0">شنبه، ۲ آبان ۱۴۰۵</p>
+          <h2 style="margin-top:6px">سلام علی محمدی 👋</h2>
+          <p>امروز ۱ از ۳ کار انجام شده. ۵ روز پیوسته چک‌این داده‌ای! 🔥</p>
+          <div class="row"><button class="btn light">❤️ ثبت چک‌این امروز</button><button class="btn light">📘 برنامه‌ی من</button></div>
+        </div>
+
+        <div class="card" style="border-color:#fde68a;background:#fffbeb">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="flex:1"><b style="font-size:13px">برنامه‌ی جدید در انتظار تأیید توست</b><p class="sub" style="margin:2px 0 0">«برنامه‌ی هفته‌ی بعد — تمرکز روی نقاط ضعف» — ۲ آبان شروع می‌شود.</p></div>
+            <button class="btn primary">بررسی و تأیید</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-style:dashed">
+          <div class="sechead"><span class="ico">🔔</span><div><h3>یادآورهای امروز</h3></div></div>
+          <div class="cols3">
+            <div class="callout brand"><b>مهلت «دفتر اشتباهات» فرداست</b><br>برای هر سؤال غلط، علت خطا را بنویس.</div>
+            <div class="callout amber"><b>۲ کار از دیروز جا مانده</b><br>شیمی — مرور استوکیومتری · زبان — لغت</div>
+            <div class="callout green"><b>جلسه‌ی بعدی: دوشنبه ۱۷:۳۰</b><br>پیگیری هفتگی + بررسی برنامه‌ی جدید</div>
+          </div>
+        </div>
+
+        <div class="grid4">
+          <div class="stat b"><small>مطالعه‌ی این هفته</small><b>۱۴ <span>ساعت</span></b></div>
+          <div class="stat g"><small>کارهای امروز</small><b>۱/۳</b></div>
+          <div class="stat a"><small>تمرین‌های باز</small><b>۲</b></div>
+          <div class="stat v"><small>روزهای پیوسته چک‌این</small><b>۵</b></div>
+        </div>
+
+        <div class="cols">
+          <div style="display:grid;gap:14px">
+            <div class="card">
+              <div class="sechead"><span class="ico">📘</span><div><h3>کارهای امروز</h3><p class="sub" style="margin:0">از برنامه: برنامه‌ی هفتگی — جمع‌بندی فصل‌های آزمون</p></div><button class="btn light" style="margin-inline-start:auto">کل هفته</button></div>
+              <div class="it study" style="font-size:12px;padding:9px"><b>✓</b> <s>زیست — فصل ۵ گوارش</s><span class="t">۱۶:۰۰ · ۹۰ دقیقه · انجام شد</span></div>
+              <div class="it test" style="font-size:12px;padding:9px"><b>◻</b> ۲۵ تست ریاضی — مبحث تابع<span class="t">۱۸:۰۰ · ۶۰ دقیقه</span></div>
+              <div class="it review" style="font-size:12px;padding:9px"><b>◻</b> مرور دفتر اشتباهات — فیزیک<span class="t">۲۰:۳۰ · ۳۰ دقیقه · یادداشت: «مبحث القا رو دوباره بخونم»</span></div>
+            </div>
+            <div class="card">
+              <div class="sechead"><span class="ico">📈</span><div><h3>آخرین آزمون</h3><p class="sub" style="margin:0">آزمون آزمایشی شماره ۴ — ۳۰ مهر</p></div></div>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                <div><b style="font-size:24px">۵۷٪</b><div class="mini">میانگین وزنی</div></div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <span class="badge b-green">ادبیات ۷۶٪</span><span class="badge b-green">زیست ۶۲٪</span><span class="badge b-amber">شیمی ۶۰٪</span><span class="badge b-amber">ریاضی ۵۷٪</span><span class="badge b-rose">فیزیک ۴۰٪</span>
+                </div>
+              </div>
+              <div class="callout amber" style="margin-top:10px"><b>۳ مورد در دفتر اشتباهات حل نشده</b><br>فیزیک: کمبود زمان · ریاضی: بی‌دقتی</div>
+              <div class="prog" style="margin-top:10px"><i style="width:57%"></i></div>
+            </div>
+          </div>
+
+          <div style="display:grid;gap:14px">
+            <div class="card">
+              <div class="sechead"><span class="ico">🗓</span><div><h3>جلسه‌ی بعدی</h3></div></div>
+              <div class="callout brand"><b>پیگیری هفتگی + بررسی برنامه‌ی جدید</b><br>دوشنبه ۴ آبان · ساعت ۱۷:۳۰ <span class="badge b-brand">۲ روز آینده</span></div>
+              <p class="mini" style="margin:9px 0 0">مشاور شما: <b>سمیرا رضایی</b></p>
+            </div>
+            <div class="card">
+              <div class="sechead"><span class="ico">✨</span><div><h3>پیام مشاور</h3></div></div>
+              <div class="bub coach"><span class="av v" style="width:28px;height:28px;font-size:11px">سر</span><div class="txt">دیروز دیدم تمرکزت بهتر شده 👏 این هفته یک بلوک فیزیک اضافه کنیم؟</div></div>
+              <button class="btn light" style="width:100%;margin-top:9px">گفت‌وگو</button>
+            </div>
+            <div class="card">
+              <div class="sechead"><span class="ico">🎯</span><div><h3>تست‌های این هفته</h3></div></div>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                <div style="text-align:center" dir="ltr"><b style="font-size:19px">۶۴<span style="color:#cbd5e1">/</span>۱۴۰</b><div class="mini">درست از کل</div></div>
+                <span class="badge b-amber">درصد صحت ۴۵.۷٪</span>
+                <span class="mini">۳ بلوک با تست · ۱۱ آیتم برنامه</span>
+              </div>
+              <div class="cols3" style="margin-top:10px;grid-template-columns:repeat(7,1fr)">
+                <div class="stat b" style="padding:7px"><small>۱</small><b style="font-size:12px">۲</b></div>
+                <div class="stat b" style="padding:7px"><small>۲</small><b style="font-size:12px">۱</b></div>
+                <div class="stat b" style="padding:7px"><small>۳</small><b style="font-size:12px">۱</b></div>
+                <div class="stat b" style="padding:7px"><small>۴</small><b style="font-size:12px">۲</b></div>
+                <div class="stat b" style="padding:7px"><small>۵</small><b style="font-size:12px">۱</b></div>
+                <div class="stat b" style="padding:7px"><small>۶</small><b style="font-size:12px">۱</b></div>
+                <div class="stat b" style="padding:7px"><small>۷</small><b style="font-size:12px">۱</b></div>
+              </div>
+              <p class="mini" style="margin:6px 0 0">ستون‌ها: هفت مرحله‌ی مطالعه — عدد زیر هر مرحله، تعداد بلوک‌هایی است که آن مرحله در آن‌ها ثبت شده.</p>
+
+              <div class="sechead" style="margin-top:14px"><span class="ico">❤️</span><div><h3>چک‌این امروز</h3></div></div>
+              <p class="sub" style="margin:0 0 8px">امروز ثبت نکرده‌ای. یک دقیقه وقت بگذار؛ مشاورت این را می‌بیند.</p>
+              <button class="btn primary" style="width:100%">ثبت چک‌این</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۶. تأیید برنامه (دانش‌آموز) ══════════════ -->
+    <section class="screen" id="s-approve"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> خانه</a><a class="act" href="#"><i>📘</i> برنامه‌ی من</a><a href="#"><i>📋</i> تمرین‌ها</a><a href="#"><i>❤️</i> چک‌این</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>💬</i> گفت‌وگو</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av">عم</span><div><b style="font-size:12px">علی محمدی</b><div class="mini">دانش‌آموز</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>جزئیات برنامه</h1><button class="btn light" style="margin-inline-start:auto">بازگشت</button></div>
+      <div class="content">
+        <div class="card">
+          <b style="font-size:15px">برنامه‌ی هفته‌ی بعد — تمرکز روی نقاط ضعف</b>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><span class="badge b-amber">در انتظار تأیید دانش‌آموز</span><span class="badge b-slate">قابل ویرایش</span></div>
+          <p class="sub" style="margin:8px 0 0">۲ آبان تا ۸ آبان · مشاور: سمیرا رضایی</p>
+          <div class="callout amber" style="margin-top:12px">
+            <b>این برنامه منتظر تأیید توست</b><br>
+            اگر با ساعت کلاس‌ها، خواب یا توانت جور نیست، «درخواست اصلاح» بزن و دقیق بنویس کدام بخش را چطور تغییر بدهیم.
+            اگر خوب است، تأیید کن تا فعال شود.
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn ok">تأیید می‌کنم</button><button class="btn light">درخواست اصلاح</button></div>
+          </div>
+          <div class="grid4" style="margin-top:14px">
+            <div class="stat b"><small>آیتم‌ها</small><b>۳</b></div><div class="stat g"><small>انجام‌شده</small><b>۰/۳</b></div>
+            <div class="stat v"><small>مجموع ساعت</small><b>۳.۵ <span>ساعت</span></b></div><div class="stat a"><small>درصد پیشرفت</small><b>۰٪</b></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <button class="btn light">هفته‌ی بعد ›</button><b style="font-size:12.5px">۲ تا ۸ آبان</b><button class="btn light">‹ هفته‌ی قبل</button>
+            <button class="btn primary" style="margin-inline-start:auto">+ آیتم جدید</button>
+          </div>
+          <div class="week">
+            <div class="day today"><h4>شنبه</h4><div class="d">۲ آبان</div><div class="it study">ریاضی — احتمال<span class="t">۱۶:۰۰ · ۹۰′ · اولویت بالا</span></div></div>
+            <div class="day"><h4>یک‌شنبه</h4><div class="d">۳ آبان</div><div class="it study">شیمی — اسید و باز<span class="t">۱۷:۰۰ · ۷۵′</span></div></div>
+            <div class="day"><h4>دوشنبه</h4><div class="d">۴ آبان</div><div class="it test">زیست — آزمون فصل ۶<span class="t">۱۶:۳۰ · ۶۰′</span></div></div>
+            <div class="day"><h4>سه‌شنبه</h4><div class="d">۵ آبان</div><div class="mini" style="text-align:center;padding-top:14px">—</div></div>
+            <div class="day"><h4>چهارشنبه</h4><div class="d">۶ آبان</div><div class="mini" style="text-align:center;padding-top:14px">—</div></div>
+            <div class="day"><h4>پنج‌شنبه</h4><div class="d">۷ آبان</div><div class="mini" style="text-align:center;padding-top:14px">—</div></div>
+            <div class="day"><h4>جمعه</h4><div class="d">۸ آبان</div><div class="mini" style="text-align:center;padding-top:14px">—</div></div>
+          </div>
+          <p class="mini" style="text-align:center;margin:9px 0 0">این برنامه «قابل ویرایش» است: می‌توانی جابه‌جا کنی و بعد به مشاور اطلاع می‌رسد.</p>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۷. چک‌این ══════════════ -->
+    <section class="screen" id="s-checkin"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> خانه</a><a href="#"><i>📘</i> برنامه‌ی من</a><a href="#"><i>📋</i> تمرین‌ها</a><a class="act" href="#"><i>❤️</i> چک‌این</a><a href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>💬</i> گفت‌وگو</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av">عم</span><div><b style="font-size:12px">علی محمدی</b><div class="mini">دانش‌آموز</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>چک‌این روزانه</h1><span class="badge b-green" style="margin-inline-start:auto">۵ روز پیوسته 🔥</span></div>
+      <div class="content">
+        <div class="grid4">
+          <div class="stat b"><small>میانگین حال (۷ روز)</small><b>۳.۶ <span>از ۵</span></b></div>
+          <div class="stat g"><small>میانگین انرژی</small><b>۳.۲ <span>از ۵</span></b></div>
+          <div class="stat v"><small>میانگین تمرکز</small><b>۳.۸ <span>از ۵</span></b></div>
+          <div class="stat a"><small>مطالعه‌ی ۷ روز اخیر</small><b>۲۳ <span>ساعت</span></b></div>
+        </div>
+        <div class="grid4">
+          <div class="stat v"><small>میانگین خواب</small><b>۷.۲ <span>ساعت</span></b></div>
+          <div class="stat r"><small>میانگین فضای مجازی</small><b>۲.۵ <span>ساعت در روز</span></b></div>
+          <div class="stat g"><small>ورزش ۷ روز اخیر</small><b>۱۸۵ <span>دقیقه</span></b></div>
+          <div class="stat b"><small>تفریح سالم (۷ روز)</small><b>۱۱ <span>تیک</span></b></div>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">❤️</span><div><h3>چک‌این شنبه، ۲ آبان ۱۴۰۵</h3><p class="sub" style="margin:0">یک دقیقه وقت بگذار؛ این داده به مشاورت کمک می‌کند برنامه را با حال تو تنظیم کند</p></div></div>
+          <div style="display:grid;gap:14px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#475569"><span>حال کلی امروز</span><span>خوب</span></div>
+              <div class="rate" style="margin-top:6px"><b class="on">1</b><b class="on">2</b><b class="on">3</b><b class="on">4</b><b>5</b></div>
+            </div>
+            <div class="cols3">
+              <div><label style="font-size:11.5px;color:#475569">انرژی</label><div class="rate" style="margin-top:6px"><b class="on">1</b><b class="on">2</b><b class="on">3</b><b>4</b><b>5</b></div></div>
+              <div><label style="font-size:11.5px;color:#475569">تمرکز</label><div class="rate" style="margin-top:6px"><b class="on">1</b><b class="on">2</b><b class="on">3</b><b class="on">4</b><b>5</b></div></div>
+              <div></div>
+            </div>
+            <div class="cols3">
+              <div class="field"><label>مطالعه‌ی امروز (دقیقه)</label><div class="in" dir="ltr">210</div></div>
+              <div class="field"><label>خواب دیشب (ساعت)</label><div class="in" dir="ltr">7.5</div></div>
+              <div class="field"><label>فضای مجازی (ساعت)</label><div class="in" dir="ltr">3.5</div></div>
+              <div class="field"><label>ورزش (دقیقه)</label><div class="in" dir="ltr">30</div></div>
+              <div></div>
+            </div>
+            <div class="callout amber" style="margin:0"><b>۳.۵ ساعت فضای مجازی امروز.</b> به‌جای «کم‌کردن زوری»، یکی از تفریح‌های پایین را جایگزین نیم‌ساعت از آن کن — خیلی پایدارتر است.</div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#475569">
+                <span>تفریح‌های امروز</span><span>۲ مورد انتخاب شده — معمولاً ۱ تا ۲ مورد کافی است</span>
+              </div>
+              <p class="mini" style="margin:6px 0 9px">یکی‌دو کار کوچک و سالم که امروز برای خودت انجام دادی — نه تفریح دراز و پرهزینه.</p>
+              <div class="cols3">
+                <div class="lk on">🚶 پیاده‌روی یا دوچرخه<span class="bx">✓</span></div>
+                <div class="lk on">📖 کتاب غیردرسی<span class="bx">✓</span></div>
+                <div class="lk">⚽ ورزش (فوتبال، شنا، بدنسازی)<span class="bx"></span></div>
+                <div class="lk">🎵 موسیقی یا ساززدن<span class="bx"></span></div>
+                <div class="lk">🎨 نقاشی یا خطاطی<span class="bx"></span></div>
+                <div class="lk">🍳 آشپزی یا شیرینی‌پزی<span class="bx"></span></div>
+                <div class="lk">🎲 بازی فکری با خانواده<span class="bx"></span></div>
+                <div class="lk">🎬 فیلم یا مستند با خانواده<span class="bx"></span></div>
+                <div class="lk">✍️ نوشتن (خاطرات یا داستان)<span class="bx"></span></div>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">
+                <span class="badge b-brand">📖 کتاب غیردرسی — ۳ روز</span><span class="badge b-brand">🚶 پیاده‌روی یا دوچرخه — ۲ روز</span><span class="badge b-brand">🎵 موسیقی یا ساززدن — ۲ روز</span>
+              </div>
+            </div>
+            <div class="field"><label>یادداشت امروز (اختیاری)</label><div class="in" style="min-height:64px;color:#94a3b8">امروز صبح تمرکزم کم بود، بعد از ظهر بهتر شد…</div></div>
+            <button class="btn primary" style="padding:11px">ثبت چک‌این امروز</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">📊</span><div><h3>روند ۱۴ روز اخیر</h3><p class="sub" style="margin:0">ستون‌ها: دقایق مطالعه — نقطه‌ها: حال روزانه</p></div></div>
+          <div class="bars">
+            <div class="bar"><span class="pt" style="bottom:56%;background:#f59e0b"></span><div class="col" style="height:52%"></div><span class="lbl">۱۸۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:70%"></div><span class="lbl">۲۴۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:60%"></div><span class="lbl">۲۱۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:30%;background:#f43f5e"></span><div class="col" style="height:26%"></div><span class="lbl">۹۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:88%"></div><span class="lbl">۳۰۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:84%;background:#10b981"></span><div class="col" style="height:76%"></div><span class="lbl">۲۶۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:56%;background:#f59e0b"></span><div class="col" style="height:44%"></div><span class="lbl">۱۵۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:70%"></div><span class="lbl">۲۴۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:70%;background:#10b981"></span><div class="col" style="height:82%"></div><span class="lbl">۲۸۰</span></div>
+            <div class="bar"><span class="pt" style="bottom:84%;background:#10b981"></span><div class="col" style="height:92%"></div><span class="lbl">۳۱۰</span></div>
+          </div>
+          <div class="legend"><span><i style="background:#6366f1"></i>دقایق مطالعه</span><span><i style="background:#10b981;border-radius:99px"></i>حال خوب</span><span><i style="background:#f43f5e;border-radius:99px"></i>حال نامساعد</span></div>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">💬</span><div><h3>تاریخچه و پاسخ مشاور</h3></div></div>
+          <div class="rows">
+            <div class="row"><div class="grow"><b>پنج‌شنبه، ۱ آبان</b><small>حال ۲/۵ · مطالعه ۹۰ دقیقه · خواب ۵.۵ ساعت · فضای مجازی ۵ ساعت · ورزش —</small>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px"><span class="badge b-slate">🎲 بازی فکری با خانواده</span></div>
+            </div><span class="badge b-rose">حال پایین</span></div>
+            <div class="callout brand" style="margin:0"><b>پاسخ مشاور:</b> طبیعی است. بیا برای نیم‌ساعت اول روز یک کار کوچک مشخص تعیین کنیم که شروع کردن ساده باشد.</div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۸. آزمون‌ها ══════════════ -->
+    <section class="screen" id="s-exams"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> داشبورد</a><a href="#"><i>👥</i> دانش‌آموزان</a><a href="#"><i>📘</i> برنامه‌ها</a><a href="#"><i>🗓</i> جلسات</a><a class="act" href="#"><i>📈</i> آزمون‌ها</a><a href="#"><i>🎟</i> دعوت‌ها</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av v">سر</span><div><b style="font-size:12px">سمیرا رضایی</b><div class="mini">مشاور</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>آزمون‌ها و دفتر اشتباهات</h1><span class="badge b-brand" style="margin-inline-start:auto">علی محمدی</span></div>
+      <div class="content">
+        <div class="card">
+          <div class="sechead"><span class="ico">📈</span><div><h3>تحلیل آزمون‌ها</h3><p class="sub" style="margin:0">آخرین آزمون: آزمون آزمایشی شماره ۴ — ۳۰ مهر</p></div><button class="btn primary" style="margin-inline-start:auto">+ ثبت آزمون</button></div>
+          <div class="grid4">
+            <div class="stat b"><small>میانگین آخرین آزمون</small><b>۵۷٪</b><span style="color:#059669">▲ ۶.۲ نسبت به قبل</span></div>
+            <div class="stat g"><small>قوی‌ترین درس</small><b style="font-size:14px">ادبیات</b><span>۷۶٪</span></div>
+            <div class="stat a"><small>ضعیف‌ترین درس</small><b style="font-size:14px">فیزیک</b><span>۴۰٪</span></div>
+            <div class="stat v"><small>بیشترین علت غلط</small><b style="font-size:14px">کمبود زمان</b><span>۲ مورد حل‌نشده</span></div>
+          </div>
+
+          <div class="cols" style="margin-top:14px">
+            <div>
+              <b style="font-size:12px">درصد درس‌ها (آخرین آزمون)</b>
+              <div style="display:grid;gap:9px;margin-top:10px">
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">ادبیات</span><b>۷۶%</b><span style="color:#059669;font-size:10px">▲ ۴</span><span class="mini" style="margin-inline-start:auto">۱۹ درست · ۴ غلط · ۲ نزده</span></div><div class="prog"><i style="width:76%;background:#10b981"></i></div></div>
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">زیست</span><b>۶۲%</b><span style="color:#059669;font-size:10px">▲ ۱۰</span><span class="mini" style="margin-inline-start:auto">۳۱ درست · ۱۴ غلط · ۵ نزده</span></div><div class="prog"><i style="width:62%;background:#10b981"></i></div></div>
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">شیمی</span><b>۶۰%</b><span class="mini" style="margin-inline-start:auto">۲۱ درست · ۱۰ غلط · ۴ نزده</span></div><div class="prog"><i style="width:60%"></i></div></div>
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">ریاضی</span><b>۵۷%</b><span style="color:#059669;font-size:10px">▲ ۷</span><span class="mini" style="margin-inline-start:auto">۱۷ درست · ۹ غلط · ۴ نزده</span></div><div class="prog"><i style="width:57%"></i></div></div>
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">عربی</span><b>۵۶%</b><span style="color:#059669;font-size:10px">▲ ۴</span><span class="mini" style="margin-inline-start:auto">۱۴ درست · ۸ غلط · ۳ نزده</span></div><div class="prog"><i style="width:56%"></i></div></div>
+                <div><div style="display:flex;font-size:11px;gap:8px"><span style="width:52px">فیزیک</span><b>۴۰%</b><span style="color:#e11d48;font-size:10px">▼ ۳</span><span class="mini" style="margin-inline-start:auto">۱۲ درست · ۱۶ غلط · ۲ نزده</span></div><div class="prog"><i style="width:40%;background:#f59e0b"></i></div></div>
+              </div>
+              <p class="mini" style="margin:8px 0 0">مقایسه با آزمون قبلی (۲۴ مهر) · خط تیره‌ی عمودی = درصد هدف</p>
+            </div>
+            <div>
+              <b style="font-size:12px">روند میانگین آزمون‌ها</b>
+              <svg class="trend" viewBox="0 0 220 96" preserveAspectRatio="none" style="margin-top:10px">
+                <line x1="16" y1="76" x2="210" y2="76" stroke="#e2e8f0"/>
+                <line x1="16" y1="48" x2="210" y2="48" stroke="#e2e8f0" stroke-dasharray="4 6"/>
+                <line x1="16" y1="20" x2="210" y2="20" stroke="#e2e8f0" stroke-dasharray="4 6"/>
+                <polyline points="34,66 118,54 198,38" fill="none" stroke="#6366f1" stroke-width="2"/>
+                <circle cx="34" cy="66" r="4" fill="#fff" stroke="#4f46e5" stroke-width="2"/>
+                <circle cx="118" cy="54" r="4" fill="#fff" stroke="#4f46e5" stroke-width="2"/>
+                <circle cx="198" cy="38" r="4" fill="#fff" stroke="#4f46e5" stroke-width="2"/>
+                <text x="34" y="60" font-size="8" fill="#4f46e5" text-anchor="middle">۴۸٪</text>
+                <text x="118" y="48" font-size="8" fill="#4f46e5" text-anchor="middle">۵۱٪</text>
+                <text x="198" y="32" font-size="8" fill="#4f46e5" text-anchor="middle">۵۷٪</text>
+                <text x="34" y="88" font-size="7" fill="#94a3b8" text-anchor="middle">۹ مهر</text>
+                <text x="118" y="88" font-size="7" fill="#94a3b8" text-anchor="middle">۲۴ مهر</text>
+                <text x="198" y="88" font-size="7" fill="#94a3b8" text-anchor="middle">۳۰ مهر</text>
+              </svg>
+              <p class="mini">سه آزمون اخیر · روند صعودی 🎉</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">📝</span><div><h3>دفتر اشتباهات</h3><p class="sub" style="margin:0">علت هر غلط را دسته‌بندی کن؛ مرور جمعه‌ها روی همین دفتر باشد</p></div></div>
+          <div style="display:grid;gap:7px;max-width:520px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:11px"><span style="width:96px">نبودِ دانش</span><div class="prog" style="flex:1;height:16px"><i style="width:85%;background:#fb7185"></i></div><b>۴</b></div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:11px"><span style="width:96px">بی‌دقتی</span><div class="prog" style="flex:1;height:16px"><i style="width:60%;background:#fbbf24"></i></div><b>۳</b></div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:11px"><span style="width:96px">کمبود زمان</span><div class="prog" style="flex:1;height:16px"><i style="width:40%;background:#a78bfa"></i></div><b>۲</b></div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:11px"><span style="width:96px">بدخوانی سؤال</span><div class="prog" style="flex:1;height:16px"><i style="width:20%;background:#2dd4bf"></i></div><b>۱</b></div>
+          </div>
+          <div class="rows" style="margin-top:12px">
+            <div class="row" style="background:#f5f3ff;border-color:#ddd6fe"><div class="grow"><b>فیزیک — کمبود زمان</b><small>سه سؤال آخر وقت نرسید؛ باید روی تست‌های سریع‌تر کار کنم.</small></div><span class="badge b-violet">حل‌نشده</span></div>
+            <div class="row" style="background:#fff1f2;border-color:#fecdd3"><div class="grow"><b>فیزیک — نبودِ دانش</b><small>مبحث القا را کامل نخوانده بودم.</small></div><span class="badge b-rose">حل‌نشده</span></div>
+            <div class="row" style="background:#fffbeb;border-color:#fde68a"><div class="grow"><b>ریاضی — بی‌دقتی</b><small>دو سؤال را در محاسبه‌ی ساده اشتباه کردم؛ باید مرحله‌ها را بنویسم.</small></div><span class="badge b-amber">حل‌نشده</span></div>
+            <div class="row" style="background:#ecfdf5;border-color:#a7f3d0"><div class="grow"><b>شیمی — بدخوانی صورت سؤال</b><small>«مجموع» را «تفاوت» خواندم.</small></div><span class="badge b-green">حل شد</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- ══════════════ ۹. گزارش والد ══════════════ -->
+    <section class="screen" id="s-parent"><div class="shell"><aside class="sidebar">
+      <div class="brand"><div class="logo">ر</div><div><b>رادمهر</b><span>مشاوره‌ی تحصیلی و روانی</span></div></div>
+      <nav class="nav"><a href="#"><i>🏠</i> خانه</a><a href="#"><i>📘</i> برنامه‌ی فرزندم</a><a class="act" href="#"><i>📋</i> گزارش</a><a href="#"><i>💬</i> گفت‌وگو</a></nav>
+      <div class="sidefoot"><div class="userchip"><span class="av a">زم</span><div><b style="font-size:12px">زهرا محمدی</b><div class="mini">والد</div></div></div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><h1>گزارش هفتگی</h1><span class="badge b-slate" style="margin-inline-start:auto">فقط خواندنی</span></div>
+      <div class="content">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div><small class="mini">گزارش هفتگی</small><b style="font-size:13.5px;display:block">۲ تا ۸ آبان ۱۴۰۵</b></div>
+            <div style="margin-inline-start:auto;display:flex;gap:8px"><button class="btn light">هفته‌ی قبل</button><button class="btn light">هفته‌ی جاری</button><button class="btn primary">چاپ / PDF</button></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sechead"><span class="ico">📋</span><div><h3>گزارش علی محمدی</h3><p class="sub" style="margin:0">دوازدهم · علوم تجربی</p></div></div>
+          <div class="grid4">
+            <div class="stat b"><small>مطالعه‌ی هفته</small><b>۱۴ <span>ساعت</span></b></div>
+            <div class="stat g"><small>انجام برنامه</small><b>۶۴٪</b><span>۷ از ۱۱ کار</span></div>
+            <div class="stat v"><small>میانگین حال</small><b>۳.۶ <span>از ۵</span></b></div>
+            <div class="stat a"><small>میانگین خواب</small><b>۶.۴ <span>ساعت</span></b></div>
+          </div>
+
+          <div class="cols" style="margin-top:14px">
+            <div>
+              <b style="font-size:12px">کارهای انجام‌شده در این هفته</b>
+              <div class="rows" style="margin-top:9px">
+                <div class="row" style="padding:7px"><span class="badge b-green">✓ انجام شد</span><div class="grow" style="font-size:11px">زیست — فصل ۵ گوارش</div><span class="mini">۲ آبان</span></div>
+                <div class="row" style="padding:7px"><span class="badge b-green">✓ انجام شد</span><div class="grow" style="font-size:11px">۲۵ تست ریاضی — تابع</div><span class="mini">۲ آبان</span></div>
+                <div class="row" style="padding:7px"><span class="badge b-slate">انجام نشد</span><div class="grow" style="font-size:11px">شیمی — مرور استوکیومتری</div><span class="mini">۳ آبان</span></div>
+                <div class="row" style="padding:7px"><span class="badge b-slate">انجام نشد</span><div class="grow" style="font-size:11px">فیزیک — حرکت‌شناسی</div><span class="mini">۴ آبان</span></div>
+              </div>
+              <b style="font-size:12px;display:block;margin-top:14px">آزمون‌ها و کارنامه‌ها</b>
+              <div class="card tight" style="margin-top:9px">
+                <b style="font-size:11.5px">آزمون آزمایشی شماره ۴</b> <span class="mini">۳۰ مهر</span>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+                  <span class="badge b-green">ادبیات ۷۶٪</span><span class="badge b-green">زیست ۶۲٪</span><span class="badge b-amber">شیمی ۶۰٪</span><span class="badge b-amber">ریاضی ۵۷٪</span><span class="badge b-rose">فیزیک ۴۰٪</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <b style="font-size:12px">چک‌این‌های هفته</b>
+              <div class="rows" style="margin-top:9px">
+                <div class="row" style="padding:7px"><span class="badge b-green">حال ۴/۵</span><div class="grow" style="font-size:11px">۳ آبان · مطالعه ۲۴۰′ · خواب ۷ ساعت</div></div>
+                <div class="row" style="padding:7px"><span class="badge b-amber">حال ۳/۵</span><div class="grow" style="font-size:11px">۴ آبان · مطالعه ۲۱۰′ · خواب ۶.۵ ساعت</div></div>
+                <div class="row" style="padding:7px"><span class="badge b-rose">حال ۲/۵</span><div class="grow" style="font-size:11px">۱ آبان · مطالعه ۹۰′ · خواب ۵.۵ ساعت</div></div>
+              </div>
+              <b style="font-size:12px;display:block;margin-top:14px">روند ۱۴ روز اخیر</b>
+              <div class="prog" style="margin-top:9px;height:10px"><i style="width:64%" class="prog g"></i></div>
+              <p class="mini" style="margin:6px 0 0">روند مطالعه و حال به‌طور کلی صعودی است؛ دو روز افت در میانه‌ی هفته دیده می‌شود.</p>
+              <b style="font-size:12px;display:block;margin-top:14px">جلسه‌های هفته</b>
+              <div class="card tight" style="margin-top:9px">
+                <span class="badge b-green">برگزار شد</span> <b style="font-size:11.5px">بررسی وضعیت مطالعه و اضطراب آزمون</b>
+                <p class="mini" style="margin:7px 0 0">قدم‌های بعدی: تمرین تنفس شبانه ۲) دفتر اشتباهات ۳) ثبت چک‌این روزانه</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="cols3" style="margin-top:14px">
+            <div class="callout green"><b>نقاط قوت</b><br>۷ کار از برنامه انجام شده و ثبت چک‌این منظم بوده است.</div>
+            <div class="callout amber"><b>نکته‌ها</b><br>میانگین خواب ۶.۴ ساعت است؛ کمی کمتر از حد مطلوب. یک شب زودتر بخوابد بهتر است.</div>
+            <div class="callout brand"><b>قدم پیشنهادی</b><br>این گزارش را به مشاور نشان دهید و بخواهید برای هفته‌ی بعد یک هدف کوچک و قابل اندازه‌گیری تعیین کند.</div>
+          </div>
+          <p class="mini" style="margin-top:12px">این گزارش فقط برای والدین تولید شده و جزئیات خصوصی جلسه‌های مشاوره را شامل نمی‌شود.</p>
+        </div>
+      </div>
+    </div></div></section>
+
+  </div>
+  <p class="footer-note">رادمهر — پیش‌نمایش طراحی. نسخه‌ی کارکننده: <b>localhost:5173</b> (حالت دمو) · مستندات راه‌اندازی: <b>SETUP.md</b></p>
+</div>
+
+<script>
+  const titles = {
+    login: 'ورود',
+    dash: 'داشبورد مشاور',
+    file: 'پرونده دانش‌آموز',
+    plan: 'ویرایش program', // overridden below
+    home: 'خانه دانش‌آموز',
+    approve: 'تأیید برنامه',
+    checkin: 'چک‌این روزانه',
+    exams: 'آزمون‌ها',
+    parent: 'گزارش والد'
+  }
+  titles.plan = 'ویرایش‌گر برنامه'
+  const pills = {
+    login: 'hamghadam.netlify.app/login',
+    dash: 'hamghadam.netlify.app/c',
+    file: 'hamghadam.netlify.app/c/student/u-ali',
+    plan: 'hamghadam.netlify.app/c/plan/p-101',
+    home: 'hamghadam.netlify.app/s',
+    approve: 'hamghadam.netlify.app/s/plan/p-102',
+    checkin: 'hamghadam.netlify.app/s/checkin',
+    exams: 'hamghadam.netlify.app/c/assessments',
+    parent: 'hamghadam.netlify.app/p/report'
+  }
+  function go(key){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'))
+    document.getElementById('s-' + key)?.classList.add('on')
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.go === key))
+    const pill = document.getElementById('urlpill')
+    if (pill) pill.textContent = pills[key] || 'hamghadam.netlify.app'
+    window.scrollTo({top:0, behavior:'smooth'})
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => go(t.dataset.go)))
+  go('login')
+</script>
+</body>
+</html>
