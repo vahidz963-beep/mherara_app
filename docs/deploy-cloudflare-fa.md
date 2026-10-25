@@ -12,7 +12,7 @@
 |---|---|
 | Framework preset | None (یا Vite) |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
+| Build output directory | `dist` (فقط در حالت Pages) |
 | Root directory | (خالی) |
 
 **متغیرهای محیطی** (Settings → Environment variables، برای Production و Preview):
@@ -21,10 +21,13 @@
 |---|---|
 | `VITE_SUPABASE_URL` | Project URL از Supabase |
 | `VITE_SUPABASE_ANON_KEY` | کلید **anon public** از Supabase (هرگز service_role) |
-| `NODE_VERSION` | `20` |
-| `NPM_FLAGS` | `--legacy-peer-deps` |
+| `NODE_VERSION` | `22` |
 
-> `NPM_FLAGS` لازم است چون یکی از پکیج‌ها تعارض peer دارد و `npm install` معمولی خطا می‌دهد.
+> `NODE_VERSION` باید دقیقاً `22` باشد (نه `2`). نیازی به `NPM_FLAGS` نیست، چون فایل `.npmrc` در ریشهٔ پروژه، `legacy-peer-deps` را خودکار فعال می‌کند.
+
+**فایل‌های لازم در ریشهٔ مخزن:** `.npmrc` و `wrangler.jsonc` (هر دو در فایل zip نهایی هستند). `wrangler.jsonc` مشخص می‌کند که پوشهٔ `dist` منتشر شود و مسیرهای SPA کار کنند.
+
+**Deploy command** را `npx wrangler deploy` بگذار (اگر فیلد وجود داشت).
 
 سپس **Save and Deploy** را بزن. آدرس سایت به شکل `https://<نام-پروژه>.pages.dev` ساخته می‌شود.
 
