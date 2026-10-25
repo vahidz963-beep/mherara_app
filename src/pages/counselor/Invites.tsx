@@ -44,6 +44,7 @@ export function Invites() {
             <Select value={role} onChange={(e) => setRole(e.target.value as Invite['role'])}>
               <option value="student">دانش‌آموز</option>
               <option value="parent">والد (اتصال به یک دانش‌آموز)</option>
+              {profile?.role === 'admin' && <option value="counselor">مشاور جدید (ثبت‌نام با کد مدیر)</option>}
             </Select>
           </Field>
           <Field label="یادداشت (اختیاری)">
@@ -68,7 +69,7 @@ export function Invites() {
                   {inv.code}
                 </div>
                 <div className="flex-1 min-w-[150px]">
-                  <p className="text-xs font-bold text-slate-700">{inv.note || (inv.role === 'student' ? 'دعوت دانش‌آموز' : 'دعوت والد')}</p>
+                  <p className="text-xs font-bold text-slate-700">{inv.note || (inv.role === 'student' ? 'دعوت دانش‌آموز' : inv.role === 'counselor' ? 'دعوت مشاور' : 'دعوت والد')}</p>
                   <p className="text-[11px] text-slate-500 mt-0.5">
                     ساخته‌شده {faDate(inv.createdAt.slice(0, 10), { short: true })}
                     {inv.expiresAt ? ` · اعتبار تا ${faDate(inv.expiresAt, { short: true })} (${faRelative(inv.expiresAt)})` : ''}

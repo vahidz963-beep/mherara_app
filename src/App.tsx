@@ -25,14 +25,18 @@ import { ParentHome } from './pages/parent/Home'
 import { ParentPlan } from './pages/parent/Plan'
 import { ParentReport } from './pages/parent/Report'
 import { ParentChat } from './pages/parent/Chat'
+import { AdminDashboard } from './pages/admin/Dashboard'
 import type { Role } from './lib/types'
 
-export const homePath = (role: Role) => (role === 'counselor' ? '/c' : role === 'parent' ? '/p' : '/s')
+export const homePath = (role: Role) =>
+  role === 'admin' ? '/a' : role === 'counselor' ? '/c' : role === 'parent' ? '/p' : '/s'
 
 function Guard({ role, children }: { role: Role; children: React.ReactNode }) {
   const { profile } = useApp()
   if (!profile) return <Navigate to="/login" replace />
-  if (profile.role !== role) return <Navigate to={homePath(profile.role)} replace />
+  // مدیر اصلی به همه‌ی صفحات مشاور دسترسی دارد
+  const allowed = profile.role === role || (profile.role === 'admin' && role === 'counselor')
+  if (!allowed) return <Navigate to={homePath(profile.role)} replace />
   return <>{children}</>
 }
 
@@ -65,6 +69,9 @@ function Shell() {
     <>
       <Layout>
         <Routes>
+          {/* مدیر اصلی */}
+          <Route path="/a" element={<Guard role="admin"><AdminDashboard /></Guard>} />
+
           {/* مشاور */}
           <Route path="/c" element={<Guard role="counselor"><CounselorDashboard /></Guard>} />
           <Route path="/c/students" element={<Guard role="counselor"><Students /></Guard>} />

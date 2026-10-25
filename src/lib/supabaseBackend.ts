@@ -278,7 +278,10 @@ export class SupabaseBackend implements Backend {
   // ── auth ──
   async signIn(phone: string, password: string) {
     const sb = this.sb()
-    const { error } = await sb.auth.signInWithPassword({ email: phoneToEmail(phone), password })
+    // مدیر با ایمیل وارد می‌شود؛ بقیه با شماره موبایل (که به ایمیل داخلی نگاشت می‌شود)
+    const id = phone.trim()
+    const email = id.includes('@') ? id.toLowerCase() : phoneToEmail(phone)
+    const { error } = await sb.auth.signInWithPassword({ email, password })
     if (error) {
       const msg = /Invalid login/i.test(error.message)
         ? 'شماره یا رمز عبور درست نیست'
@@ -296,7 +299,15 @@ export class SupabaseBackend implements Backend {
     const sb = this.sb()
     const phone = normalizePhone(input.phone)
     const email = phoneToEmail(phone)
-    const meta = {
+    const code = (input.inviteCode || '').trim().toUpperCase()
+    if (input.role === 'counselor') {
+      // ثبت‌نام مشاور فقط با کد دعوت مدیر؛ اعتبارسنجی نهایی داخل دیتابیس هم انجام می‌شود
+      if (!code) throw new Error('ثبت‌نام مشاور فقط با کد دعوت مدیر رادمهر امکان‌پذیر است')
+      const { data: ok, error: chkErr } = await sb.rpc('check_counselor_invite', { p_code: code })
+      if (chkErr) throw new Error(chkErr.message)
+      if (!ok) throw new Error('کد دعوت مشاور نامعتبر، منقضی یا قبلاً استفاده شده است')
+    }
+    const meta: Record<string, unknown> = {
       phone,
       full_name: input.fullName,
       role: input.role,
@@ -304,6 +315,7 @@ export class SupabaseBackend implements Backend {
       field: input.field,
       school: input.school,
       relation: input.relation,
+      ...(input.role === 'counselor' ? { invite_code: code } : {}),
     }
     const { data, error } = await sb.auth.signUp({ email, password: input.password, options: { data: meta } })
     if (error) {

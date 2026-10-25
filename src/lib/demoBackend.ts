@@ -64,6 +64,8 @@ export const DEMO_ACCOUNTS = [
   { role: 'student' as Role, phone: '09122222222', password: '123456', name: 'نگار کاظمی' },
   { role: 'student' as Role, phone: '09124444444', password: '123456', name: 'سینا احمدی' },
   { role: 'parent' as Role, phone: '09123333333', password: '123456', name: 'زهرا محمدی (مادر علی)' },
+  // مدیر اصلی: در حالت دمو با ایمیل وارد می‌شود (در Supabase رمز واقعی در داشبورد تنظیم می‌شود)
+  { role: 'admin' as Role, phone: 'raz.abi.ilm@gmail.com', password: '123456', name: 'مدیر رادمهر' },
 ]
 
 function seed(): DB {
@@ -126,6 +128,14 @@ function seed(): DB {
       role: 'parent',
       childId: a1,
       relation: 'مادر',
+      isActive: true,
+      createdAt: now,
+    },
+    {
+      id: 'u-admin',
+      phone: '',
+      fullName: 'مدیر رادمهر',
+      role: 'admin',
       isActive: true,
       createdAt: now,
     },
@@ -512,7 +522,10 @@ export class DemoBackend implements Backend {
   async signIn(phone: string, password: string) {
     await this.tick()
     const d = db()
-    const acc = d.accounts.find((a) => a.phone === normalizePhone(phone))
+    const id = phone.trim().toLowerCase()
+    const acc = id.includes('@')
+      ? d.accounts.find((a) => a.phone.toLowerCase() === id)
+      : d.accounts.find((a) => a.phone === normalizePhone(phone))
     if (!acc) throw new Error('با این شماره کاربری ثبت‌نام نشده است')
     if (acc.password !== password) throw new Error('رمز عبور درست نیست')
     this.setSession(acc.id)
@@ -538,6 +551,16 @@ export class DemoBackend implements Backend {
       relation: input.relation,
       isActive: true,
       createdAt: new Date().toISOString(),
+    }
+
+    if (input.role === 'counselor') {
+      const code = (input.inviteCode || '').trim().toUpperCase()
+      const inv = d.invites.find(
+        (i) => i.code === code && i.role === 'counselor' && !i.usedBy && (!i.expiresAt || i.expiresAt >= todayIso()),
+      )
+      if (!inv) throw new Error('کد دعوت مشاور نامعتبر، منقضی یا قبلاً استفاده شده است')
+      inv.usedBy = id
+      inv.usedAt = new Date().toISOString()
     }
 
     if (input.role === 'student') {
@@ -665,6 +688,10 @@ export class DemoBackend implements Backend {
   async createInvite(input: { role: Role; createdBy: string; studentId?: string | null; note?: string }) {
     await this.tick()
     const d = db()
+    const creator = d.profiles.find((p) => p.id === input.createdBy)
+    if (input.role === 'counselor' && creator?.role !== 'admin') {
+      throw new Error('فقط مدیر می‌تواند کد دعوت مشاور بسازد')
+    }
     const inv: Invite = {
       code: inviteCode(),
       role: input.role,
@@ -672,7 +699,7 @@ export class DemoBackend implements Backend {
       studentId: input.studentId ?? null,
       note: input.note,
       createdAt: new Date().toISOString(),
-      expiresAt: addDaysIso(todayIso(), 30),
+      expiresAt: addDaysIso(todayIso(), input.role === 'counselor' ? 14 : 30),
     }
     d.invites.unshift(inv)
     persist(d)

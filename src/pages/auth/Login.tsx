@@ -90,13 +90,13 @@ export function Login() {
           </div>
 
           <h1 className="text-xl font-black text-slate-800">ورود به حساب</h1>
-          <p className="text-xs text-slate-500 mt-1 mb-5">با شماره موبایل و رمز عبور وارد شوید.</p>
+          <p className="text-xs text-slate-500 mt-1 mb-5">با شماره موبایل (یا ایمیل مدیر) و رمز عبور وارد شوید.</p>
 
           <form onSubmit={submit} className="space-y-4">
-            <Field label="شماره موبایل">
+            <Field label="شماره موبایل یا ایمیل مدیر">
               <Input
                 dir="ltr"
-                inputMode="tel"
+                inputMode="text"
                 placeholder="0912xxxxxxx"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}

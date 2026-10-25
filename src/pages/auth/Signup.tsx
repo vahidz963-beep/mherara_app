@@ -44,6 +44,10 @@ export function Signup() {
       setError('نام و نام خانوادگی را وارد کنید')
       return
     }
+    if (role === 'counselor' && !form.inviteCode.trim()) {
+      setError('ثبت‌نام مشاور فقط با کد دعوت مدیر رادمهر امکان‌پذیر است')
+      return
+    }
     setBusy(true)
     try {
       const p = await signUp({ ...form, role })
@@ -75,7 +79,7 @@ export function Signup() {
               onChange={(v) => setRole(v)}
               options={[
                 { value: 'student' as Role, label: 'دانش‌آموز' },
-                { value: 'counselor' as Role, label: 'مشاور' },
+                { value: 'counselor' as Role, label: 'مشاور (با کد مدیر)' },
                 { value: 'parent' as Role, label: 'والد' },
               ]}
             />
@@ -144,10 +148,19 @@ export function Signup() {
             )}
 
             {role === 'counselor' && (
-              <p className="text-[11px] text-slate-500 leading-5 bg-slate-50 border border-slate-200 rounded-xl p-3">
-                پس از ثبت‌نام، یک <b>کد دعوت</b> بسازید و به دانش‌آموز بدهید؛ با ثبت کد، پرونده‌ی او به شما وصل می‌شود. در حالت تیم،
-                مدیر مرکز می‌تواند شما را به عنوان مشاور به دانش‌آموزان وصل کند.
-              </p>
+              <>
+                <Field label="کد دعوت مشاور (الزامی)" hint="این کد را مدیر رادمهر به شما می‌دهد؛ اعتبار آن محدود و یک‌بارمصرف است">
+                  <Input
+                    dir="ltr"
+                    value={form.inviteCode}
+                    onChange={(e) => set('inviteCode', e.target.value.toUpperCase())}
+                    placeholder="مثلاً K7QF2M"
+                  />
+                </Field>
+                <p className="text-[11px] text-slate-500 leading-5 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                  بدون کد مدیر، حساب مشاور ساخته نمی‌شود. بعد از ثبت‌نام، می‌توانی کد دعوت دانش‌آموزان خودت را بسازی.
+                </p>
+              </>
             )}
 
             {error && <p className="text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">{error}</p>}

@@ -21,6 +21,14 @@ import { faNum } from '../lib/jalali'
 type NavItem = { to: string; label: string; icon: ReactNode; end?: boolean }
 
 const NAV: Record<string, NavItem[]> = {
+  admin: [
+    { to: '/a', label: 'مدیریت کاربران', icon: <IconUsers />, end: true },
+    { to: '/c', label: 'نمای مشاور', icon: <IconHome /> },
+    { to: '/c/students', label: 'دانش‌آموزان', icon: <IconUsers /> },
+    { to: '/c/plans', label: 'برنامه‌ها', icon: <IconBook /> },
+    { to: '/c/assessments', label: 'آزمون‌ها', icon: <IconTrend /> },
+    { to: '/c/invites', label: 'کدهای دعوت', icon: <IconTicket /> },
+  ],
   counselor: [
     { to: '/c', label: 'داشبورد', icon: <IconHome />, end: true },
     { to: '/c/students', label: 'دانش‌آموزان', icon: <IconUsers /> },
@@ -181,6 +189,7 @@ export function Layout({ children }: { children: ReactNode }) {
 function pageTitle(path: string, role: string) {
   if (path === '/profile') return 'پروفایل من'
   const map: Record<string, string> = {
+    '/a': 'مدیریت کاربران',
     '/c': 'داشبورد مشاور',
     '/c/students': 'دانش‌آموزان',
     '/c/plans': 'همه‌ی برنامه‌ها',
