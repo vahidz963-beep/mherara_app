@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
   try {
     const { email, password, metadata } = await req.json()
     if (!email || !password) return json({ ok: false, error: 'email و password لازم است' }, 400)
-    if (!String(email).endsWith('@phone.hamghadam.local')) {
+    if (!String(email).endsWith('@phone.radmehr.app')) {
       // فقط شماره‌های نگاشت‌شده‌ی هم‌قدم را می‌پذیریم
       return json({ ok: false, error: 'دامنه‌ی ایمیل نامعتبر' }, 400)
     }

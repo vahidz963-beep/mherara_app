@@ -47,7 +47,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 Supabase برای ورود با رمز به ایمیل نیاز دارد. ما شماره را قطعی و یکتا نگاشت می‌کنیم و هیچ ایمیلی ارسال نمی‌شود:
 
 ```
-09121234567  →  9121234567@phone.hamghadam.local
+09121234567  →  9121234567@phone.radmehr.app
 ```
 
 این منطق در `src/lib/supabaseClient.ts` تابع `phoneToEmail` است. اگر بعداً SMS OTP خواستی، کافی است یک Edge Function با

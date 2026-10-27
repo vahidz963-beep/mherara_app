@@ -21,4 +21,4 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured
  * Supabase برای ورود با رمز به ایمیل نیاز دارد؛ ما شماره را به یک ایمیل داخلی و
  * یکتا نگاشت می‌کنیم و هرگز ایمیلی ارسال نمی‌شود.
  */
-export const phoneToEmail = (phone: string) => `${normalizePhone(phone).replace(/^0+/, '')}@phone.hamghadam.local`
+export const phoneToEmail = (phone: string) => `${normalizePhone(phone).replace(/^0+/, '')}@phone.radmehr.app`

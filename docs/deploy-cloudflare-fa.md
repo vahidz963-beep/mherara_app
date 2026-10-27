@@ -12,7 +12,7 @@
 |---|---|
 | Framework preset | None (یا Vite) |
 | Build command | `npm run build` |
-| Build output directory | `dist` (فقط در حالت Pages) |
+| Build output directory | `dist` |
 | Root directory | (خالی) |
 
 **متغیرهای محیطی** (Settings → Environment variables، برای Production و Preview):
@@ -25,9 +25,9 @@
 
 > `NODE_VERSION` باید دقیقاً `22` باشد (نه `2`). نیازی به `NPM_FLAGS` نیست، چون فایل `.npmrc` در ریشهٔ پروژه، `legacy-peer-deps` را خودکار فعال می‌کند.
 
-**فایل‌های لازم در ریشهٔ مخزن:** `.npmrc` و `wrangler.jsonc` (هر دو در فایل zip نهایی هستند). `wrangler.jsonc` مشخص می‌کند که پوشهٔ `dist` منتشر شود و مسیرهای SPA کار کنند.
+**فایل لازم در ریشهٔ مخزن:** `.npmrc`. مسیرهای SPA با فایل `public/_redirects` مدیریت می‌شوند.
 
-**Deploy command** را `npx wrangler deploy` بگذار (اگر فیلد وجود داشت).
+**نکته:** این نسخه برای **Cloudflare Pages** است. فیلد Deploy command در Pages وجود ندارد و نیازی به wrangler نیست.
 
 سپس **Save and Deploy** را بزن. آدرس سایت به شکل `https://<نام-پروژه>.pages.dev` ساخته می‌شود.
 

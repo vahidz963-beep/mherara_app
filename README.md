@@ -53,7 +53,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 ۳. `npm run dev` → نشان «متصل به Supabase» در هدر اپ ظاهر می‌شود.
 
 ورود با موبایل به این شکل پیاده شده: شماره به ایمیل داخلی یکتا نگاشت می‌شود
-(‎09121234567 → 9121234567@phone.hamghadam.local‎) و هیچ ایمیلی ارسال نمی‌شود. اگر «Confirm email» روشن باشد،
+(‎09121234567 → 9121234567@phone.radmehr.app‎) و هیچ ایمیلی ارسال نمی‌شود. اگر «Confirm email» روشن باشد،
 Edge Function `phone-signup` کاربر را تأییدشده می‌سازد.
 
 ## ۳) انتشار روی Netlify
